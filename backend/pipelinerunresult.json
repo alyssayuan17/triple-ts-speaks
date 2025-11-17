@@ -1,0 +1,119 @@
+{
+  "job_id": "pres_test123",
+  "status": "done",
+  "input": {
+    "audio_url": "file://test.wav",
+    "video_url": null,
+    "language": "en",
+    "talk_type": "technical_presentation",
+    "audience_type": "general",
+    "requested_metrics": [
+      "pace",
+      "pause_quality",
+      "fillers",
+      "intonation",
+      "articulation",
+      "content_structure",
+      "confidence_cv"
+    ],
+    "user_metadata": {
+      "user_id": "user_123",
+      "session_id": "session_456"
+    },
+    "duration_sec": 3.3033125
+  },
+  "quality_flags": {
+    "asr_confidence": 0.0,
+    "mic_quality": "unknown",
+    "background_noise_level": "unknown",
+    "abstain_reason": null
+  },
+  "overall_score": {
+    "score_0_100": 0,
+    "label": "unknown",
+    "confidence": 0.0
+  },
+  "metrics": {
+    "pace": {
+      "score_0_100": null,
+      "label": "abstained",
+      "confidence": 0.0,
+      "abstained": true,
+      "details": {
+        "reason": "metric_not_implemented_yet"
+      },
+      "feedback": []
+    },
+    "pause_quality": {
+      "score_0_100": null,
+      "label": "abstained",
+      "confidence": 0.0,
+      "abstained": true,
+      "details": {
+        "reason": "metric_not_implemented_yet"
+      },
+      "feedback": []
+    },
+    "fillers": {
+      "score_0_100": null,
+      "label": "abstained",
+      "confidence": 0.0,
+      "abstained": true,
+      "details": {
+        "reason": "metric_not_implemented_yet"
+      },
+      "feedback": []
+    },
+    "intonation": {
+      "score_0_100": null,
+      "label": "abstained",
+      "confidence": 0.0,
+      "abstained": true,
+      "details": {
+        "reason": "metric_not_implemented_yet"
+      },
+      "feedback": []
+    },
+    "articulation": {
+      "score_0_100": null,
+      "label": "abstained",
+      "confidence": 0.0,
+      "abstained": true,
+      "details": {
+        "reason": "metric_not_implemented_yet"
+      },
+      "feedback": []
+    },
+    "content_structure": {
+      "score_0_100": null,
+      "label": "abstained",
+      "confidence": 0.0,
+      "abstained": true,
+      "details": {
+        "reason": "metric_not_implemented_yet"
+      },
+      "feedback": []
+    },
+    "confidence_cv": {
+      "score_0_100": null,
+      "label": "abstained",
+      "confidence": 0.0,
+      "abstained": true,
+      "details": {
+        "reason": "metric_not_implemented_yet"
+      },
+      "feedback": []
+    }
+  },
+  "timeline": [],
+  "model_metadata": {
+    "asr_model": "whisper-small",
+    "vad_model": "not_configured",
+    "embedding_model": "not_configured",
+    "version": "dev-0.0.1"
+  },
+  "transcript": {
+    "full_text": "Kids are talking by the door.",
+    "language": "en"
+  }
+}

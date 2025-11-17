@@ -1,0 +1,201 @@
+{
+  "job_id": "pres_abc123",
+  "status": "done",
+  "input": {
+    "audio_url": "https://storage.example.com/user123/talk01.wav",
+    "video_url": "https://storage.example.com/user123/talk01.mp4",
+    "language": "en",
+    "talk_type": "technical_presentation",
+    "audience_type": "general",
+    "requested_metrics": [
+      "pace",
+      "pause_quality",
+      "fillers",
+      "intonation",
+      "articulation",
+      "content_structure",
+      "confidence_cv"
+    ],
+    "user_metadata": {
+      "user_id": "user_123",
+      "session_id": "session_456"
+    },
+    "duration_sec": 240.5
+  },
+  "quality_flags": {
+    "asr_confidence": 0.86,
+    "mic_quality": "ok",
+    "background_noise_level": "low",
+    "abstain_reason": null
+  },
+  "overall_score": {
+    "score_0_100": 78,
+    "label": "strong",
+    "confidence": 0.81
+  },
+  "metrics": {
+    "pace": {
+      "score_0_100": 72,
+      "label": "slightly_fast",
+      "confidence": 0.83,
+      "abstained": false,
+      "details": {
+        "average_wpm": 185,
+        "optimal_range_wpm": [130, 170],
+        "segment_stats": [
+          { "start_sec": 0.0, "end_sec": 60.0, "wpm": 195 },
+          { "start_sec": 60.0, "end_sec": 120.0, "wpm": 178 }
+        ]
+      },
+      "feedback": [
+        {
+          "start_sec": 83.0,
+          "end_sec": 101.0,
+          "message": "You spoke at ~195 WPM (fast) with no pauses. Try a 400–700 ms pause after key claims.",
+          "tip_type": "pace"
+        }
+      ]
+    },
+    "pause_quality": {
+      "score_0_100": 65,
+      "label": "mixed",
+      "confidence": 0.77,
+      "abstained": false,
+      "details": {
+        "pause_rate_per_min": 5.2,
+        "helpful_pause_ratio": 0.6,
+        "awkward_pause_examples": [
+          { "start_sec": 45.2, "end_sec": 46.1 },
+          { "start_sec": 132.0, "end_sec": 132.8 }
+        ]
+      },
+      "feedback": [
+        {
+          "start_sec": 44.5,
+          "end_sec": 46.5,
+          "message": "Pause sounded like hesitation rather than a planned break. Try pausing at the end of a sentence.",
+          "tip_type": "pause_quality"
+        }
+      ]
+    },
+    "fillers": {
+      "score_0_100": 55,
+      "label": "high_filler_rate",
+      "confidence": 0.80,
+      "abstained": false,
+      "details": {
+        "filler_rate_per_min": 9.0,
+        "total_fillers": 36,
+        "top_fillers": [
+          { "token": "um", "count": 14 },
+          { "token": "like", "count": 10 },
+          { "token": "uh", "count": 7 }
+        ]
+      },
+      "feedback": [
+        {
+          "start_sec": 125.0,
+          "end_sec": 160.0,
+          "message": "Filler rate around 9/min in this section. Replace 'um' with a silent breath or a short pause.",
+          "tip_type": "fillers"
+        }
+      ]
+    },
+    "intonation": {
+      "score_0_100": 62,
+      "label": "somewhat_monotone",
+      "confidence": 0.75,
+      "abstained": false,
+      "details": {
+        "pitch_range_semitones": 5.2,
+        "energy_variation_score": 0.4,
+        "prosody_variance_score": 0.55
+      },
+      "feedback": [
+        {
+          "start_sec": 180.0,
+          "end_sec": 210.0,
+          "message": "Pitch and energy stayed flat here. Try stressing key words or varying pitch at sentence endings.",
+          "tip_type": "intonation"
+        }
+      ]
+    },
+    "articulation": {
+      "score_0_100": 80,
+      "label": "clear",
+      "confidence": 0.82,
+      "abstained": false,
+      "details": {
+        "clarity_score_raw": 0.78
+      },
+      "feedback": []
+    },
+    "content_structure": {
+      "score_0_100": 70,
+      "label": "mostly_clear_structure",
+      "confidence": 0.70,
+      "abstained": false,
+      "details": {
+        "detected_signposts": [
+          { "text": "first", "start_sec": 12.3 },
+          { "text": "next", "start_sec": 58.9 },
+          { "text": "in summary", "start_sec": 210.1 }
+        ],
+        "run_on_sentences_estimate": 2,
+        "jargon_density": 0.35,
+        "jargon_warning_for_general_audience": true
+      },
+      "feedback": [
+        {
+          "start_sec": 60.0,
+          "end_sec": 90.0,
+          "message": "Several long sentences may confuse a general audience. Use shorter sentences and one idea at a time.",
+          "tip_type": "content_structure"
+        }
+      ]
+    },
+    "confidence_cv": {
+      "score_0_100": 76,
+      "label": "engaged",
+      "confidence": 0.72,
+      "abstained": false,
+      "details": {
+        "body_movement_variance": 0.6,
+        "eye_contact_ratio": 0.65,
+        "smile_frequency_per_min": 2.1
+      },
+      "feedback": [
+        {
+          "start_sec": 30.0,
+          "end_sec": 60.0,
+          "message": "Good eye contact and natural movement. Keep this level of engagement throughout.",
+          "tip_type": "confidence_cv"
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 30.0,
+      "dominant_issues": ["pace"],
+      "highlights": []
+    },
+    {
+      "start_sec": 30.0,
+      "end_sec": 60.0,
+      "dominant_issues": [],
+      "highlights": ["strong_confidence_cv"]
+    }
+  ],
+  "model_metadata": {
+    "asr_model": "whisper-small",
+    "vad_model": "pyannote-vad-v1",
+    "embedding_model": "wav2vec2-base",
+    "version": "2025-11-14.1"
+  },
+  "transcript": {
+    "full_text": "Hello everyone ...",
+    "language": "en"
+  }
+}
