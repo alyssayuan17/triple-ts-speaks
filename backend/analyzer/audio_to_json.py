@@ -185,6 +185,10 @@ def run_whisper_word_timestamps(
         audio_path.as_posix(),
         word_timestamps=True,
         verbose=False,
+        temperature=0.0, # no sampling randomness
+        compression_ratio_threshold=2.4, # wtf REVIEW WHAT THESE DO
+        logprob_threshold=-1.0, # wtf
+        no_speech_threshold=0.4, # wtf
     )
 
     words: List[WordTiming] = []
