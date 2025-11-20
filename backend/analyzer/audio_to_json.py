@@ -92,7 +92,7 @@ def audio_to_json(
     pitch_hz, energy = extract_pitch_and_energy(y, sr)
     audio_summary = summarize_audio(pitch_hz, energy, sr, len(y))
 
-    # 5) NEW — VAD Analysis
+    # 5) VAD Analysis
     if enable_vad:
         try:
             speech_segments = run_vad(y, sr)  # List[(start,end)]
@@ -104,7 +104,7 @@ def audio_to_json(
         speech_segments = None
         silence_segments = None
 
-    # 6) Compute Noise and Mic Quality Heuristics (simple)
+    # 6) Compute Noise and Mic Quality Heuristics (NEED TO FIX HOW THESE ARE CALCULATED)
     noise_level = estimate_noise_level(energy)
     mic_quality = estimate_mic_quality(audio_summary.mean_energy, noise_level)
 
@@ -150,7 +150,7 @@ def audio_to_json(
             else None
         ),
         # leave room for future:
-        # "vad_segments": [...],
+        # "vad_segments": [...], done
         # "raw_pitch_hz": pitch_hz.tolist() if pitch_hz is not None else None,
         # "raw_energy": energy.tolist(),
     }
@@ -185,10 +185,14 @@ def run_whisper_word_timestamps(
         audio_path.as_posix(),
         word_timestamps=True,
         verbose=False,
-        temperature=0.0, # no sampling randomness
-        compression_ratio_threshold=2.4, # wtf REVIEW WHAT THESE DO
-        logprob_threshold=-1.0, # wtf
-        no_speech_threshold=0.4, # wtf
+        temperature=0.0, # no sampling randomness i.e. fully deterministic
+                         # could use 0.2 for "slightly more robust decoding in noisy conditions" ??? how does that make sense bruh
+        compression_ratio_threshold=2.4, # if a particular speech segment is too hard to decode (has score higher than 2.4), skip it
+                                         # lower e.g. 2.0 = more aggressive skipping, higher e.g. 3.0 more tolerant of repetition/noise
+        logprob_threshold=-1.0, # skip segments with avg logprob below this (i.e. very low confidence)
+                                # e.g. -2 = more lenient, -0.5 = more aggressive skipping
+        no_speech_threshold=0.4, # no-speech prob threshold to skip segment
+                                 # lower = more aggressive skipping, higher = more tolerant
     )
 
     words: List[WordTiming] = []
@@ -200,7 +204,15 @@ def run_whisper_word_timestamps(
             if "start" not in w or "end" not in w or "word" not in w:
                 continue
 
-            text = w["word"].strip()
+            # Skip low-confidence words (GET RID OF GARBAGE HALLUCINATIONS)
+            if w.probability is not None and w.probability < 0.2:
+                continue
+
+            # Skip very short tokens (likely punctuation/artifacts)
+            if w["end"] - w["start"] < 0.03:
+                    continue
+
+            text = w["word"].strip() #.strip(" ,.!?;:-\"'()[]{}") IF WANT TO ELIMINATE PUNCTUATION
 
             # 2. Skip empty or garbage tokens
             if not text:

@@ -119,7 +119,7 @@ def _build_transcript_from_words(words: List[Dict[str, Any]]) -> Dict[str, Any]:
         "language": "en",  # you can override this with detected language later
         "segments": segments,
         "tokens": tokens,
-    }
+    } 
 
 
 # REPLACE WITH ACTION METRICS LATER
@@ -156,15 +156,58 @@ def _build_dummy_overall_score() -> Dict[str, Any]:
 
 def _build_quality_flags(audio_json: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Build the quality_flags block. Right now this is mostly stubbed,
-    but it shows where you'd use ASR confidence, noise level, etc.
+    Build the quality_flags block.
+
+    Now uses:
+      - avg word probability -> asr_confidence
+      - noise_summary.mic_quality -> mic_quality
+      - noise_summary.noise_dbfs -> background_noise_level
+      - noise_summary.speech_ratio + asr_confidence -> abstain_reason (if very low)
     """
-    # TODO: when you wire in real ASR confidence, pass it through here
+   
+    words = audio_json.get("words", []) or []
+    probs = [
+        w.get("probability")
+        for w in words
+        if isinstance(w, dict) and w.get("probability") is not None
+    ]
+    if probs:
+        asr_confidence = float(sum(probs) / len(probs))
+    else:
+        asr_confidence = 0.0
+
+    noise_summary = audio_json.get("noise_summary", {}) or {}
+    mic_quality = noise_summary.get("mic_quality", "unknown")
+    noise_dbfs = noise_summary.get("noise_dbfs")
+    speech_ratio = float(noise_summary.get("speech_ratio", 0.0))
+
+    # Simple mapping from noise_dbfs to qualitative noise level
+    if noise_dbfs is None:
+        background_noise_level = "unknown"
+    elif noise_dbfs < -60:
+        background_noise_level = "low"
+    elif noise_dbfs < -40:
+        background_noise_level = "medium"
+    else:
+        background_noise_level = "high"
+
+    # Simple rule to decide abstain_reason (can refine later)
+    abstain_reason: Optional[str] = None
+    if asr_confidence < 0.5:
+        abstain_reason = "low_asr_confidence"
+    if speech_ratio < 0.3:
+        # If both are bad, prefer a combined reason
+        abstain_reason = (
+            "low_speech_ratio"
+            if abstain_reason is None
+            else "low_asr_and_speech_ratio"
+        )
+
     return {
-        "asr_confidence": 0.0,
-        "mic_quality": "unknown",
-        "background_noise_level": "unknown",
-        "abstain_reason": None,
+        "asr_confidence": asr_confidence,
+        "mic_quality": mic_quality,
+        "background_noise_level": background_noise_level,
+        "abstain_reason": abstain_reason,
     }
 
 
@@ -203,7 +246,11 @@ def run_full_analysis(
     #   "audio_metadata": {...},
     #   "audio_features": {...},
     #   "words": [...],
-    #   "pauses": [...]
+    #   "pauses": [...],
+    #   "vad_segments": [...],
+    #   "silence_segments": [...],
+    #   "vad_pause_segments": [...],
+    #   "noise_summary": {...},
     # }
 
     audio_metadata = audio_json.get("audio_metadata", {})
@@ -241,9 +288,9 @@ def run_full_analysis(
     # 6) model metadata: stubbed for now; fill with real versions later
     model_metadata = {
         "asr_model": "whisper-small",
-        "vad_model": "not_configured",
+        "vad_model": "silero-vad",
         "embedding_model": "not_configured",
-        "version": "dev-0.0.1",
+        "version": "dev-0.0.2",
     }
 
     # 7) Build the final response dict that matches your
